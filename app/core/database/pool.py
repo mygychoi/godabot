@@ -38,7 +38,7 @@ class PoolManager:
 
     @classmethod
     @asynccontextmanager
-    async def initiate(cls, app: FastAPI):  # noqa
+    async def initiate(cls, app: FastAPI | None = None):  # noqa
         try:
             await cls.start()
             yield {"pool": cls}
