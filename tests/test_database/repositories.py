@@ -1,6 +1,6 @@
 from app.core.cache import rlu
 from app.core.database import CommandRepository, QueryRepository
-from tests.test_database.schemas import Temp
+from tests.test_database.models import Temp
 
 
 class TempQueryRepository(QueryRepository):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from .dependencies import TempCommander, TempQuerier
-from .schemas import Temp
+from .models import Temp
 
 router = APIRouter(prefix="/temps", tags=["Temp"])
 
