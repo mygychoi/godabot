@@ -39,10 +39,11 @@ class SlashcommandRequest(Schema):
     text: str
 
     team_id: str
-    team_name: str | None
     team_domain: str
+
     enterprise_id: str | None = None
     enterprise_name: str | None = None
+
     user_id: str
     user_name: str
 
@@ -57,7 +58,7 @@ class SlashcommandRequest(Schema):
 
     @validator("text")
     def trim_text(cls, v):
-        return v.stip("/ ")
+        return v.strip("/ ")
 
     @validator("api_app_id", pre=True)
     def validate_api_app_id(cls, v):
