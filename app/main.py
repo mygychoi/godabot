@@ -1,10 +1,23 @@
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from app import access, slashcommand
 from app.configs import settings
 from app.core.database.pool import PoolManager
 from app.core.middleware import TrustedRequestMiddleware
+
+sentry_sdk.init(
+    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+    traces_sample_rate=0.05,
+    integrations=[
+        StarletteIntegration(transaction_style="endpoint"),
+        FastApiIntegration(transaction_style="endpoint"),
+    ],
+    environment=settings.ENVIRONMENT,
+)
 
 godabot = FastAPI(
     title=settings.NAME,

@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     SLACK_SIGNING_SECRET: str
     SLACK_API_APP_ID: str
 
+    # Sentry
+    SENTRY_DSN: str
+
     # Project
     NAME: str
     VERSION: str
