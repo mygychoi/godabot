@@ -16,7 +16,7 @@ class PoolManager:
     async def start(cls):
         cls._pool = await create_pool(  # pyright: ignore
             dsn=settings.DATABASE_URL,
-            min_size=8,
+            min_size=3,
             max_size=8,
             command_timeout=3,
         )
