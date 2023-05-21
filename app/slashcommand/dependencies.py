@@ -14,18 +14,18 @@ SlashcommandCommander = Annotated[
 ]
 
 
-def slashcommand_commander(
+def slashcommand_servicer(
     commander: SlashcommandCommander,
     access_querier: AccessQuerier,
     bot_clienteer: BotClienteer,
     gpt_clienteer: GptClienteer,
-):
-    return {
-        "commander": commander,
-        "access_querier": access_querier,
-        "bot_clienteer": bot_clienteer,
-        "gpt_clienteer": gpt_clienteer,
-    }
+) -> SlashcommandService:
+    return SlashcommandService(
+        commander=commander,
+        access_querier=access_querier,
+        bot_clienteer=bot_clienteer,
+        gpt_clienteer=gpt_clienteer,
+    )
 
 
-SlashcommandServicer = Annotated[SlashcommandService, Depends(slashcommand_commander)]
+SlashcommandServicer = Annotated[SlashcommandService, Depends(slashcommand_servicer)]
