@@ -12,8 +12,8 @@ from app.core.schemas import Schema
 
 
 class Command(str, Enum):
-    CHAT = "godabot/"
-    ECHO = "godabot-echo/"
+    CHAT = "/godabot"
+    ECHO = "/godabot-echo"
 
 
 class SlashcommandRequest(Schema):
