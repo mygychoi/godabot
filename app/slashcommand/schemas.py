@@ -39,7 +39,7 @@ class SlashcommandRequest(Schema):
     text: str
 
     team_id: str
-    team_name: str
+    team_name: str | None
     team_domain: str
     enterprise_id: str | None = None
     enterprise_name: str | None = None
@@ -52,7 +52,7 @@ class SlashcommandRequest(Schema):
     response_url: HttpUrl
     api_app_id: str
 
-    trigger_id: str
+    trigger_id: str | None
     token: Annotated[str | None, "deprecated"] = None
 
     @validator("text")
