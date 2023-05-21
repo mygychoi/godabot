@@ -14,7 +14,7 @@ openai.api_key = settings.OPENAI_API_KEY
 openai.organization = settings.OPENAI_ORGANIZATION
 
 sentry_sdk.init(
-    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+    dsn=settings.SENTRY_DSN,
     traces_sample_rate=0.05,
     integrations=[
         StarletteIntegration(transaction_style="endpoint"),
@@ -49,3 +49,7 @@ if settings.ENVIRONMENT == settings.ENVIRONMENT.DEV:
     from tests import test_database
 
     godabot.include_router(router=test_database.routers.router)
+
+    @godabot.get("/test")
+    def test():
+        return 1 / 0
