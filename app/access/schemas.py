@@ -85,5 +85,5 @@ class AccessResponse(Schema):
     bot_user_id: str
     app_id: str
     team: Team
-    enterprise: Enterprise | None
-    authed_user: AuthedUser | None
+    enterprise: Enterprise | None = None
+    authed_user: AuthedUser | None = None
