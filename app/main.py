@@ -8,6 +8,7 @@ from sentry_sdk.integrations.starlette import StarletteIntegration
 from app import access, slashcommand
 from app.configs import settings
 from app.core.database.pool import PoolManager
+from app.core.middleware import TrustedRequestMiddleware
 
 openai.api_key = settings.OPENAI_API_KEY
 openai.organization = settings.OPENAI_ORGANIZATION
@@ -37,7 +38,7 @@ godabot = FastAPI(
 # Middlewares
 if settings.ENVIRONMENT != settings.ENVIRONMENT.DEV:
     godabot.add_middleware(HTTPSRedirectMiddleware)
-    # godabot.add_middleware(TrustedRequestMiddleware)
+    godabot.add_middleware(TrustedRequestMiddleware)
 
 # Domains
 godabot.include_router(router=access.router)
