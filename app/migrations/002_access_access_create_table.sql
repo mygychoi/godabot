@@ -1,4 +1,5 @@
--- Goda 2023-05-20
+-- Goda 2023.05.21
+
 create table if not exists public.access_access
 (
     team_id           varchar(255)                                       not null
