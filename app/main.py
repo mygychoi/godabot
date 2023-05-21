@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from app import access, slashcommand
 from app.configs import settings
@@ -19,6 +20,7 @@ godabot = FastAPI(
 
 # Middlewares
 if settings.ENVIRONMENT != settings.ENVIRONMENT.DEV:
+    godabot.add_middleware(HTTPSRedirectMiddleware)
     godabot.add_middleware(TrustedRequestMiddleware)
 
 # Domains
