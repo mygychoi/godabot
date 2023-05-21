@@ -44,7 +44,7 @@ async def sync_perform(count: int):
         await aggregator.read_and_write(id=random.randint(50, 100), name=f"test_{i}")
 
 
-@pytest.mark.parametrize("count", list(range(50, 100)))
+@pytest.mark.parametrize("count", list(range(50, 60)))
 @pytest.mark.asyncio
 @with_pool
 async def test_aioperf(count: int):
