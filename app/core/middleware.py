@@ -22,6 +22,7 @@ def calculate_signature(*, timestamp: str, body: bytes) -> str:
 
 class TrustedRequestMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        """TODO: research about"""
         timestamp = request.headers.get("X-Slack-Request-Timestamp")
         signature = request.headers.get("X-Slack-Signature")
         if timestamp is None or signature is None:
