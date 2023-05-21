@@ -14,7 +14,7 @@ openai.organization = settings.OPENAI_ORGANIZATION
 
 sentry_sdk.init(
     dsn=settings.SENTRY_DSN,
-    traces_sample_rate=0.05,
+    traces_sample_rate=1,
     integrations=[
         StarletteIntegration(transaction_style="endpoint"),
         FastApiIntegration(transaction_style="endpoint"),
