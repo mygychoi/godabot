@@ -1,3 +1,4 @@
+import openai
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
@@ -8,6 +9,9 @@ from app import access, slashcommand
 from app.configs import settings
 from app.core.database.pool import PoolManager
 from app.core.middleware import TrustedRequestMiddleware
+
+openai.api_key = settings.OPENAI_API_KEY
+openai.organization = settings.OPENAI_ORGANIZATION
 
 sentry_sdk.init(
     dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
