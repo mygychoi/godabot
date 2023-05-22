@@ -8,22 +8,17 @@ from .repositories import AccessCommandRepository, AccessQueryRepository
 from .schemas import AccessRequest
 
 
-class AccessQueryService(QueryService[AccessQueryRepository]):
+class AccessQueryService(QueryService):
+    repository: AccessQueryRepository = AccessQueryRepository()
+
     async def get_by_team_id(self, *, team_id: str) -> Access:
         return await self.repository.get_by_team_id(team_id=team_id)
 
 
-class AccessCommandService(CommandService[AccessCommandRepository]):
-    def __init__(
-        self,
-        *,
-        querier: AccessQueryService,
-        repository: AccessCommandRepository,
-        client: AccessClient,
-    ):
-        super().__init__(repository=repository)
-        self.querier = querier
-        self.client = client
+class AccessCommandService(CommandService):
+    querier: AccessQueryService = AccessQueryService()
+    repository: AccessCommandRepository = AccessCommandRepository()
+    client: AccessClient = AccessClient()
 
     async def activate(self, *, request: AccessRequest) -> Access:
         access_resp = await self.client.request(request=request)

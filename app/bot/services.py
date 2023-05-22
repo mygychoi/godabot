@@ -1,14 +1,20 @@
 from pydantic import HttpUrl
 
+from app.core.services import Service
+
 from .clients import BotClient
+from .schemas import Message
 
 
-class BotClientService:
-    def __init__(self, client: BotClient):
-        self.client = client
+class BotClientService(Service):
+    client: BotClient = BotClient()
 
-    async def post_message(self, *, token: str, channel_id: str, message: str):
-        await self.client.post_message(token=token, channel_id=channel_id, message=message)
+    async def post_message(self, *, message: Message):
+        await self.client.post_message(
+            token=message.token,
+            channel_id=message.channel_id,
+            text=message.token,
+        )
 
     async def acknowledge(self, *, url: HttpUrl):
         await self.client.acknowledge(url)

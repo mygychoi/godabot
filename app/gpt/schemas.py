@@ -23,12 +23,12 @@ class Message(Schema):
 
 
 class ChatCompletionRequest(Schema):
-    model: ChatModel = ChatModel.gpt3dot5
+    model: ChatModel
     messages: list[Message]
-    max_token: int = 512
-    temperature: float = 1.0
-    top_p: float = 1.0
-    n: int = 1
+    max_token: int
+    temperature: float
+    top_p: float
+    n: int
 
 
 class ChatCompletionResponse(Schema):
@@ -67,6 +67,9 @@ class ChatCompletionResponse(Schema):
     created: int
     choices: list[Choice]
     usage: Usage
+
+    class Config:
+        orm_mode = True
 
     def answer(self):
         return "".join(choice.message.content for choice in self.choices)

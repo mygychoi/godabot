@@ -5,6 +5,7 @@ refer to https://api.slack.com/interactivity/slash-commands
 from enum import Enum
 from typing import Annotated
 
+from fastapi import Form
 from pydantic import HttpUrl, validator
 
 from app.configs import settings
@@ -16,7 +17,7 @@ class Command(str, Enum):
     ECHO = "/godabot-echo"
 
 
-class SlashcommandRequest(Schema):
+class SlashcommandForm(Schema):
     """
     token=gIkuvaNzQIHg97ATvDxqgjtO
     &team_id=T0001
@@ -35,30 +36,26 @@ class SlashcommandRequest(Schema):
 
     """
 
-    command: Command
-    text: str
+    command: Annotated[Command, Form()]
+    text: Annotated[str, Form()]
 
-    team_id: str
-    team_domain: str
+    team_id: Annotated[str, Form()]
+    team_domain: Annotated[str, Form()]
 
-    enterprise_id: str | None = None
-    enterprise_name: str | None = None
+    enterprise_id: Annotated[str | None, Form()] = None
+    enterprise_name: Annotated[str | None, Form()] = None
 
-    user_id: str
-    user_name: str
+    user_id: Annotated[str, Form()]
+    user_name: Annotated[str, Form()]
 
-    channel_id: str
-    channel_name: str
+    channel_id: Annotated[str, Form()]
+    channel_name: Annotated[str, Form()]
 
     response_url: HttpUrl
-    api_app_id: str
+    api_app_id: Annotated[str, Form()]
 
-    trigger_id: str | None
-    token: Annotated[str | None, "deprecated"] = None
-
-    @validator("text")
-    def trim_text(cls, v):
-        return v.strip("/ ")
+    trigger_id: Annotated[str | None, Form()]
+    token: Annotated[str | None, Form()] = None  # deprecated
 
     @validator("api_app_id", pre=True)
     def validate_api_app_id(cls, v):

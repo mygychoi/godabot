@@ -1,2 +1,2 @@
-from .dependencies import BotClienteer
+from .schemas import Message
 from .services import BotClientService

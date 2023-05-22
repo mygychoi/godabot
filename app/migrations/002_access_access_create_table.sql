@@ -16,9 +16,6 @@ create table if not exists public.access_access
     updated_at        timestamp with time zone
 );
 
-alter table public.access_access
-    owner to goda;
-
 create index if not exists access_access_created_at_ix
     on public.access_access (created_at desc);
 
