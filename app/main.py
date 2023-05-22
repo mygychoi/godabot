@@ -20,7 +20,7 @@ sentry_sdk.init(
         StarletteIntegration(transaction_style="endpoint"),
         FastApiIntegration(transaction_style="endpoint"),
     ],
-    environment=settings.ENVIRONMENT,
+    environment=settings.ENV.value,
 )
 
 godabot = FastAPI(
@@ -31,12 +31,12 @@ godabot = FastAPI(
     license_info={"name": settings.LICENSE},
     terms_of_service="",  # TODO: Add url later
     debug=settings.DEBUG,
-    openapi_url="/openapi.json" if settings.ENVIRONMENT == settings.ENVIRONMENT.DEV else None,
+    openapi_url="/openapi.json" if settings.ENV == settings.DEV else None,
     lifespan=PoolManager.initiate,
 )
 
 # Middlewares
-if settings.ENVIRONMENT != settings.ENVIRONMENT.DEV:
+if settings.ENV == settings.PROD:
     godabot.add_middleware(HTTPSRedirectMiddleware)
     godabot.add_middleware(TrustedRequestMiddleware)
 
@@ -45,11 +45,7 @@ godabot.include_router(router=access.router)
 godabot.include_router(router=slashcommand.router)
 
 # Tests
-if settings.ENVIRONMENT == settings.ENVIRONMENT.DEV:
+if settings.ENV == settings.DEV:
     from tests import test_database
 
     godabot.include_router(router=test_database.routers.router)
-
-    @godabot.get("/test")
-    def test():
-        return 1 / 0

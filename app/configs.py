@@ -6,12 +6,6 @@ from pydantic import BaseSettings, Extra, PostgresDsn
 from pydantic.env_settings import SettingsSourceCallable
 
 
-class Environment(str, Enum):
-    DEV = "development"
-    STAGING = "staging"
-    PROD = "production"
-
-
 def pyproject_settings(setting: BaseSettings) -> dict[str, Any]:  # noqa
     with open("pyproject.toml", mode="rb") as pyproject:
         project_table: dict[str, Any] = tomllib.load(pyproject)["project"]
@@ -19,7 +13,15 @@ def pyproject_settings(setting: BaseSettings) -> dict[str, Any]:  # noqa
 
 
 class Settings(BaseSettings):
-    ENVIRONMENT: Environment = Environment.DEV
+    class Environment(str, Enum):
+        DEV = "development"
+        STAGING = "staging"
+        PROD = "production"
+
+    DEV = Environment.DEV
+    STAGING = Environment.STAGING
+    PROD = Environment.PROD
+    ENV: Environment = DEV
 
     # Database
     DATABASE_URL: PostgresDsn
@@ -60,7 +62,7 @@ class Settings(BaseSettings):
 
     @property
     def DEBUG(self) -> bool:  # noqa
-        return self.ENVIRONMENT == Environment.DEV
+        return self.ENV == self.DEV
 
 
-settings = Settings()  # pyright: ignore
+settings = Settings()  # type: ignore
