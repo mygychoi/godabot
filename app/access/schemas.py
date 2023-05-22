@@ -87,3 +87,6 @@ class AccessResponse(Schema):
     team: Team
     enterprise: Enterprise | None = None
     authed_user: AuthedUser | None = None
+
+    class Config:
+        orm_mode = True

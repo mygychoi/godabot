@@ -23,7 +23,6 @@ class AccessCommandService(CommandService):
     async def activate(self, *, request: AccessRequest) -> Access:
         access_resp = await self.client.request(request=request)
         if not access_resp.ok:
-            # TODO: Add custom service layer exception hierarchy later
             raise HTTPException(status_code=403, detail="Failed")
         access = Access.parse_response(response=access_resp)
         async with self.transaction():

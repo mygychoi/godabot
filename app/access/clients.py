@@ -15,4 +15,4 @@ class AccessClient(Client):
             client_secret=settings.SLACK_CLIENT_SECRET,
             code=request.code,
         )
-        return AccessResponse.parse_obj(access_resp)
+        return AccessResponse.from_orm(access_resp)
