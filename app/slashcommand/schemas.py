@@ -51,7 +51,7 @@ class SlashcommandForm(Schema):
     channel_id: Annotated[str, Form()]
     channel_name: Annotated[str, Form()]
 
-    response_url: HttpUrl
+    response_url: Annotated[HttpUrl, Form()]
     api_app_id: Annotated[str, Form()]
 
     trigger_id: Annotated[str | None, Form()]
