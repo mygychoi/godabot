@@ -32,8 +32,6 @@ class SlashcommandCommandService(CommandService):
 
 
 class SlashcommandService(Service):
-    """TODO: Remove code duplication"""
-
     commander: SlashcommandCommandService = SlashcommandCommandService()
     access_querier: AccessQueryService = AccessQueryService()
     bot_clienteer: BotClientService = BotClientService()

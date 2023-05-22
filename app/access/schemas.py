@@ -18,8 +18,8 @@ class AccessRequest(Schema):
     refresh_token: string(Optional)
     """
 
-    client_id: str = settings.SLACK_CLIENT_ID
-    client_secret: str = settings.SLACK_CLIENT_SECRET
+    client_id: str
+    client_secret: str
     code: str
     grant_type: str | None = None
     redirect_uri: str | None = None
