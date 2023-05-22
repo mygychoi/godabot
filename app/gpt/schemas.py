@@ -25,7 +25,7 @@ class Message(Schema):
 class ChatCompletionRequest(Schema):
     model: ChatModel
     messages: list[Message]
-    max_token: int
+    max_tokens: int
     temperature: float
     top_p: float
     n: int
