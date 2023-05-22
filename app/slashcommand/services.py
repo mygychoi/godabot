@@ -43,6 +43,7 @@ class SlashcommandService(Service):
             self.gpt_clienteer.answer_for(prompt=form.text),
             self.access_querier.get_by_team_id(team_id=form.team_id),
         )
+        answer = f"Here is my answer for *{form.text}*\n\n{answer}"
         message = Message(token=access.token, channel_id=form.channel_id, text=answer)
         posting = self.bot_clienteer.post_message(message=message)
         logging = self.commander.create(slashcommand=Slashcommand.parse_obj(obj=form))
