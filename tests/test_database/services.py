@@ -4,7 +4,9 @@ from app.core.database import CommandService, QueryService
 from tests.test_database.repositories import TempCommandRepository, TempQueryRepository
 
 
-class TempQueryService(QueryService[TempQueryRepository]):
+class TempQueryService(QueryService):
+    repository: TempQueryRepository = TempQueryRepository()
+
     async def get_by_id(self, *, id: int):
         return await self.repository.get_by_id(id=id)
 
@@ -12,7 +14,9 @@ class TempQueryService(QueryService[TempQueryRepository]):
         return await self.repository.get_or_none(id=id)
 
 
-class TempCommandService(CommandService[TempCommandRepository]):
+class TempCommandService(CommandService):
+    repository: TempCommandRepository = TempCommandRepository()
+
     async def create(self, *, name: str):
         async with self.transaction():
             return await self.repository.create(name=name)
