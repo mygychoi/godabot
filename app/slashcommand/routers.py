@@ -21,4 +21,4 @@ async def echo(form: SlashcommandFormDep) -> Response:
 async def chat(form: SlashcommandFormDep, background_tasks: BackgroundTasks) -> Response:
     service = SlashcommandService()
     background_tasks.add_task(service.chat, form=form)
-    return Response(status_code=204)
+    return Response(status_code=200, content="Thanks! Please wait for a second...")
