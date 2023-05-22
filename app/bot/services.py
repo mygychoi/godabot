@@ -13,7 +13,7 @@ class BotClientService(Service):
         await self.client.post_message(
             token=message.token,
             channel_id=message.channel_id,
-            text=message.token,
+            text=message.text,
         )
 
     async def acknowledge(self, *, url: HttpUrl):
