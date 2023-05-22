@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from app.core.registry import Registry
 
 
-class Model(Registry, BaseModel):
+class Model(BaseModel, Registry):
     @classmethod
     def construct_from(cls, *, obj: Record | dict, _fields_set: set | None = None) -> Self:
         return cls.construct(**obj, _fields_set=_fields_set)

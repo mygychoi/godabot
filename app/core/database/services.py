@@ -1,19 +1,15 @@
-from typing import Generic
+from app.core.services import Service
 
-from app.core.registry import Registry
-
-from .repositories import CommandRepositoryT, QueryRepositoryT
+from .repositories import CommandRepository
 from .transaction import TransactionManager
 
 
-class QueryService(Generic[QueryRepositoryT], Registry):
-    def __init__(self, *, repository: QueryRepositoryT):
-        self.repository = repository
+class QueryService(Service):
+    pass
 
 
-class CommandService(Generic[CommandRepositoryT], Registry):
-    def __init__(self, *, repository: CommandRepositoryT):
-        self.repository = repository
+class CommandService(Service):
+    repository: CommandRepository
 
     def transaction(self) -> TransactionManager:
         return TransactionManager.get_or_create(repository=self.repository)

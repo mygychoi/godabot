@@ -14,10 +14,10 @@ class PoolManager:
 
     @classmethod
     async def start(cls):
-        cls._pool = await create_pool(  # pyright: ignore
+        cls._pool = await create_pool(  # type: ignore
             dsn=settings.DATABASE_URL,
-            min_size=3,
-            max_size=8,
+            min_size=5,
+            max_size=10,
             command_timeout=3,
         )
 
