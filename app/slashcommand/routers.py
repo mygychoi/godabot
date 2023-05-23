@@ -19,6 +19,16 @@ async def echo(form: SlashcommandFormDep) -> Response:
 
 @router.post("/chat")
 async def chat(form: SlashcommandFormDep, background_tasks: BackgroundTasks) -> Response:
-    service = SlashcommandService()
-    background_tasks.add_task(service.chat, form=form)
+    commander = SlashcommandService()
+    background_tasks.add_task(commander.chat, form=form)
     return Response(status_code=200, content="Thanks! Please wait for a second...")
+
+
+@router.post("/draw")
+async def draw(form: SlashcommandFormDep, background_tasks: BackgroundTasks) -> Response:
+    commander = SlashcommandService()
+    background_tasks.add_task(commander.draw, form=form)
+    return Response(
+        status_code=200,
+        content="Thanks! I am drawing now, Please wait for a second...",
+    )
