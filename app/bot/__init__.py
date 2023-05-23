@@ -1,2 +1,2 @@
-from .schemas import Message
+from .schemas import File, Message
 from .services import BotClientService

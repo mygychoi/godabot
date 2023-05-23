@@ -12,3 +12,11 @@ class Message(Schema):
     channel_id: str
     text: str
     blocks: list[Block] = []
+
+
+class File(Schema):
+    token: str
+    channel_id: str
+    file_name: str
+    file: bytes
+    initial_comment: str
