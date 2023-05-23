@@ -7,7 +7,7 @@ from app.core.clients import Client
 
 from .schemas import StabilityRequest, TextPrompt
 
-HEADERS = {"Authorization": f"Barer {settings.STABILITY_API_KEY}"}
+HEADERS = {"Authorization": f"Bearer {settings.STABILITY_API_KEY}"}
 
 
 class StabilityClient(Client):
