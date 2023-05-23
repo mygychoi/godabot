@@ -10,7 +10,7 @@ class BotClientService(Service):
     client: BotClient = BotClient()
 
     async def post_message(self, *, message: Message):
-        await self.client.post_message(**message.dict())
+        await self.client.post_message(**message.dict(exclude={"blocks"}))
 
     async def post_file(self, *, file: File):
         await self.client.post_file(**file.dict())
