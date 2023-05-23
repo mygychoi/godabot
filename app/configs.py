@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     OPENAI_ORGANIZATION: str
 
+    # Stability
+    STABILITY_API_KEY: str
+
     # Slack
     SLACK_CLIENT_ID: str
     SLACK_CLIENT_SECRET: str
