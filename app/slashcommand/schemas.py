@@ -15,6 +15,7 @@ from app.core.schemas import Schema
 class Command(str, Enum):
     CHAT = "/godabot"
     ECHO = "/godabot-echo"
+    DRAW = "/godabot-draw"
 
 
 class SlashcommandForm(Schema):
