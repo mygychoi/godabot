@@ -3,7 +3,6 @@ import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from app import access, slashcommand
 from app.configs import settings
@@ -15,11 +14,8 @@ openai.organization = settings.OPENAI_ORGANIZATION
 
 sentry_sdk.init(
     dsn=settings.SENTRY_DSN,
-    traces_sample_rate=1,
-    integrations=[
-        StarletteIntegration(transaction_style="endpoint"),
-        FastApiIntegration(transaction_style="endpoint"),
-    ],
+    traces_sample_rate=0.2,
+    integrations=[FastApiIntegration(transaction_style="url")],
     environment=settings.ENV.value,
 )
 
