@@ -21,4 +21,5 @@ class StabilityClient(Client):
                 json=generation_request.dict(exclude={"engine"}),
             ) as response:
                 data = await response.json()
+                # TODO: key error
                 return base64.b64decode(data["artifacts"][0]["base64"])
