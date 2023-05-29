@@ -31,5 +31,6 @@ class ValidSignatureMiddleware(BaseHTTPMiddleware):
             if signature != calculated:
                 raise HTTPException(status_code=404, detail="Invalid slack signature")
             response = await call_next(request)
+            logging.error(response)
             return response
         return await call_next(request)
