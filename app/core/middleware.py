@@ -5,6 +5,7 @@ refer to https://api.slack.com/authentication/verifying-requests-from-slack
 import hashlib
 import hmac
 
+from starlette.exceptions import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
@@ -23,6 +24,10 @@ class TrustedRequestMiddleware(BaseHTTPMiddleware):
         if request.method == "POST":
             timestamp = request.headers["X-Slack-Request-Timestamp"]
             signature = request.headers["X-Slack-Signature"]
-            if signature != calculate_signature(timestamp=timestamp, body=await request.body()):
-                return Response(status_code=403)
+            import logging
+
+            calculated = calculate_signature(timestamp=timestamp, body=await request.body())
+            logging.error(f"{signature}, {calculated}")
+            if signature != calculated:
+                raise HTTPException(status_code=404, detail="Invalid slack signature")
         return await call_next(request)
