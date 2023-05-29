@@ -23,9 +23,8 @@ godabot = FastAPI(
 )
 
 # Middlewares
-if settings.ENV == settings.PROD:
-    godabot.add_middleware(HTTPSRedirectMiddleware)
-    godabot.add_middleware(TrustedRequestMiddleware)
+godabot.add_middleware(HTTPSRedirectMiddleware)
+godabot.add_middleware(TrustedRequestMiddleware)
 
 
 # Logging
