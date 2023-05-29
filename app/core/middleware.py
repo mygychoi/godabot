@@ -19,7 +19,7 @@ def calculate_signature(*, timestamp: str, body: bytes) -> str:
     return f"v0={hmac.new(secret, signature, hashlib.sha256).hexdigest()}"
 
 
-class TrustedRequestMiddleware(BaseHTTPMiddleware):
+class ValidSignatureMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.method == "POST":
             timestamp = request.headers["X-Slack-Request-Timestamp"]

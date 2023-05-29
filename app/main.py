@@ -8,6 +8,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from app import access, home, slashcommand
 from app.configs import settings
 from app.core.database.pool import PoolManager
+from app.core.middleware import ValidSignatureMiddleware
 
 godabot = FastAPI(
     title=settings.NAME,
@@ -25,7 +26,7 @@ godabot = FastAPI(
 # Middlewares
 if settings.ENV == settings.PROD:
     godabot.add_middleware(HTTPSRedirectMiddleware)
-    # godabot.add_middleware(TrustedRequestMiddleware)
+    godabot.add_middleware(ValidSignatureMiddleware)
 
 
 # Logging
