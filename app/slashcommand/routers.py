@@ -1,6 +1,7 @@
+import asyncio
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Response
+from fastapi import APIRouter, Depends, Response
 
 from .schemas import SlashcommandInput
 from .services import SlashcommandQueryService, SlashcommandService
@@ -18,16 +19,16 @@ async def echo(input: SlashcommandInputDep) -> Response:
 
 
 @router.post("/chat")
-async def chat(input: SlashcommandInputDep, background_tasks: BackgroundTasks) -> Response:
+async def chat(input: SlashcommandInputDep) -> Response:
     commander = SlashcommandService()
-    background_tasks.add_task(commander.chat, input=input)
+    asyncio.create_task(commander.chat(input=input))
     return Response(status_code=200, content="Thanks! Please wait for a second...")
 
 
 @router.post("/draw")
-async def draw(input: SlashcommandInputDep, background_tasks: BackgroundTasks) -> Response:
+async def draw(input: SlashcommandInputDep) -> Response:
     commander = SlashcommandService()
-    background_tasks.add_task(commander.draw, input=input)
+    asyncio.create_task(commander.draw(input=input))
     return Response(
         status_code=200,
         content="Thanks! I am drawing now, Please wait for a second...",

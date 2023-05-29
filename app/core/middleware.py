@@ -6,9 +6,8 @@ import hashlib
 import hmac
 
 from starlette.exceptions import HTTPException
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.configs import settings
 
@@ -19,19 +18,26 @@ def calculate_signature(*, timestamp: str, body: bytes) -> str:
     return f"v0={hmac.new(secret, signature, hashlib.sha256).hexdigest()}"
 
 
-class ValidSignatureMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        return await call_next(request)
-        if request.method == "POST":
-            timestamp = request.headers["X-Slack-Request-Timestamp"]
-            signature = request.headers["X-Slack-Signature"]
-            import logging
+class ValidSignatureMiddleware:
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
 
-            calculated = calculate_signature(timestamp=timestamp, body=await request.body())
-            logging.error(f"{signature}, {calculated}")
-            if signature != calculated:
-                raise HTTPException(status_code=404, detail="Invalid slack signature")
-            response = await call_next(request)
-            logging.error(response)
-            return response
-        return await call_next(request)
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            return await self.app(scope, receive, send)
+
+        request = Request(scope)
+        timestamp = request.headers["X-Slack-Request-Timestamp"]
+        signature = request.headers["X-Slack-Signature"]
+        body = await request.body()
+
+        if signature != self.calculate_signature(timestamp=timestamp, body=body):
+            raise HTTPException(status_code=403, detail="Invalid slack signature")
+
+        return await self.app(scope, receive, send)
+
+    @staticmethod
+    def calculate_signature(*, timestamp: str, body: bytes) -> str:
+        signature = f"v0:{timestamp}:{body.decode('utf-8')}".encode()
+        secret = settings.SLACK_SIGNING_SECRET.encode()
+        return f"v0={hmac.new(secret, signature, hashlib.sha256).hexdigest()}"
