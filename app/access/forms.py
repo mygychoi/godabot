@@ -39,12 +39,6 @@ class AccessFormResult(Form):
         name: str
         id: str
 
-    class AuthedUserForm(Form):
-        id: str
-        scope: str
-        access_token: str
-        token_type: str
-
     ok: bool
     access_token: str
     token_type: str
@@ -53,7 +47,3 @@ class AccessFormResult(Form):
     app_id: str
     team: TeamForm
     enterprise: EnterpriseForm | None = None
-    authed_user: AuthedUserForm | None = None
-
-    class Config:
-        orm_mode = True
