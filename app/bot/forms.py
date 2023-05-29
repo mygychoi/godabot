@@ -1,10 +1,12 @@
+from pydantic import Field
+
 from app.core.client import Form
 
 from .schemas import FileInput
 
 
 class FileForm(Form):
-    channel: str
+    channel: str = Field(alias="channel_id")
     file_name: str
     file: bytes
     title: str
