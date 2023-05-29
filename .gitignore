@@ -6,3 +6,6 @@
 
 # Env
 .env
+
+# Bootstrap
+app/home/static/bootstrap/
