@@ -19,4 +19,4 @@ class AccessClient(Client):
         )
         logging.error(response)
         repr(response)
-        return AccessFormResult.parse_obj(response)
+        return AccessFormResult.from_orm(response)
