@@ -1,5 +1,3 @@
-import logging
-
 from slack_sdk.web.async_client import AsyncWebClient
 
 from app.configs import settings
@@ -17,6 +15,4 @@ class AccessClient(Client):
             client_secret=settings.SLACK_CLIENT_SECRET,
             code=code,
         )
-        logging.error(response.data)
-        repr(response.data)
         return AccessFormResult.parse_obj(response.data)
