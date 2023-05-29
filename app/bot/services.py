@@ -15,7 +15,7 @@ class BotClientService(Service):
 
     async def post_file(self, *, token: str, file: FileInput):
         form = FileForm.from_input(input=file)
-        await self.client.post_file(token=token, **form.dict())
+        await self.client.post_file(token=token, form=form)
 
     async def acknowledge(self, *, url: HttpUrl):
         await self.client.acknowledge(url=url)
