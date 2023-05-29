@@ -33,6 +33,7 @@ class ValidSignatureMiddleware:
                     return message
 
                 await self.app(scope, validate_signature, send)
+                return
 
         await self.app(scope, receive, send)
 
