@@ -22,19 +22,18 @@ class ValidSignatureMiddleware:
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
         if scope["type"] != "http":
-            return await self.app(scope, receive, send)
-
-        request = Request(scope)
-        timestamp = request.headers["X-Slack-Request-Timestamp"]
-        signature = request.headers["X-Slack-Signature"]
-        body = await request.body()
-
-        if signature != self.calculate_signature(timestamp=timestamp, body=body):
-            raise HTTPException(status_code=403, detail="Invalid slack signature")
-
-        return await self.app(scope, receive, send)
+            await self.app(scope, receive, send)
+        else:
+            request = Request(scope)
+            if request.method == "POST":
+                timestamp = request.headers["X-Slack-Request-Timestamp"]
+                signature = request.headers["X-Slack-Signature"]
+                body = await request.body()
+                if signature != self.calculate_signature(timestamp=timestamp, body=body):
+                    raise HTTPException(status_code=403, detail="Invalid slack signature")
+            await self.app(scope, receive, send)
 
     @staticmethod
     def calculate_signature(*, timestamp: str, body: bytes) -> str:
