@@ -12,12 +12,6 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 from app.configs import settings
 
 
-def calculate_signature(*, timestamp: str, body: bytes) -> str:
-    signature = f"v0:{timestamp}:{body.decode('utf-8')}".encode()
-    secret = settings.SLACK_SIGNING_SECRET.encode()
-    return f"v0={hmac.new(secret, signature, hashlib.sha256).hexdigest()}"
-
-
 class ValidSignatureMiddleware:
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
