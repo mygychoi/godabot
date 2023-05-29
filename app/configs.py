@@ -80,6 +80,14 @@ class Settings(BaseSettings):
     def DEBUG(self) -> bool:  # noqa
         return self.ENV == self.DEV
 
+    @property
+    def DOCS_URL(self) -> str | None:  # noqa
+        return "/docs" if settings.ENV == settings.DEV else None
+
+    @property
+    def OPENAPI_URL(self) -> str | None:  # noqa
+        return "/openapi.json" if settings.ENV == settings.DEV else None
+
 
 settings = Settings()  # type: ignore
 

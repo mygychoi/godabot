@@ -18,8 +18,8 @@ godabot = FastAPI(
     license_info={"name": settings.LICENSE},
     terms_of_service=settings.TERMS,
     debug=settings.DEBUG,
-    docs_url="/docs" if settings.ENV == settings.DEV else None,
-    openapi_url="/openapi.json" if settings.ENV == settings.DEV else None,
+    docs_url=settings.DOCS_URL,
+    openapi_url=settings.OPENAPI_URL,
     lifespan=PoolManager.initiate,
 )
 
