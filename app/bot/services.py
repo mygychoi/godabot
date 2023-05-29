@@ -1,19 +1,21 @@
 from pydantic import HttpUrl
 
-from app.core.services import Service
+from app.core.service import Service
 
 from .clients import BotClient
-from .schemas import File, Message
+from .forms import FileForm
+from .schemas import FileInput, MessageInput
 
 
 class BotClientService(Service):
     client: BotClient = BotClient()
 
-    async def post_message(self, *, message: Message):
-        await self.client.post_message(**message.dict(exclude={"blocks"}))
+    async def post_message(self, *, token: str, message: MessageInput):
+        await self.client.post_message(token=token, **message.dict())
 
-    async def post_file(self, *, file: File):
-        await self.client.post_file(**file.dict())
+    async def post_file(self, *, token: str, file: FileInput):
+        form = FileForm.from_input(input=file)
+        await self.client.post_file(token=token, **form.dict())
 
     async def acknowledge(self, *, url: HttpUrl):
         await self.client.acknowledge(url=url)

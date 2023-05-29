@@ -1,25 +1,23 @@
-import base64
+from typing import ClassVar
 
 import aiohttp
 
 from app.configs import settings
-from app.core.clients import Client
+from app.core.client import Client
 
-from .schemas import StabilityRequest, TextPrompt
-
-HEADERS = {"Authorization": f"Bearer {settings.STABILITY_API_KEY}"}
+from .forms import StabilityForm, StabilityFormResult
 
 
 class StabilityClient(Client):
-    @staticmethod
-    async def request(*, prompt: str) -> bytes:
-        generation_request = StabilityRequest(text_prompts=[TextPrompt(text=prompt, weight=1.0)])
+    HEADERS: ClassVar[dict] = {"Authorization": f"Bearer {settings.STABILITY_API_KEY}"}
+
+    @classmethod
+    async def generate_image(cls, *, form: StabilityForm) -> bytes:
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                url=generation_request.url,
-                headers=HEADERS,
-                json=generation_request.dict(exclude={"engine"}),
+                url=form.url,
+                headers=cls.HEADERS,
+                json=form.dict(exclude={"engine"}),
             ) as response:
                 data = await response.json()
-                # TODO: key error
-                return base64.b64decode(data["artifacts"][0]["base64"])
+                return StabilityFormResult.parse_obj(data).file()

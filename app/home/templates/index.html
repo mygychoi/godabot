@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" class="h-100" data-bs-theme="auto">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>...</title>
+    <link href="{{ url_for("static", path="bootstrap/css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", path="index.css") }}" rel="stylesheet"/>
+</head>
+
+<body class="d-flex h-100 text-center text-bg-dark">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto">
+        {% include "nav.html" %}
+    </header>
+
+    <main class="px-3">
+        {% block main %}
+
+        {% endblock %}
+    </main>
+
+    <footer class="mt-auto text-white-50">
+        {% include "footer.html" %}
+    </footer>
+</div>
+
+<script src="{{ url_for("static", path="bootstrap.bundle.min.js") }}"></script>
+</body>
+</html>

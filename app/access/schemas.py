@@ -5,10 +5,10 @@ Please refer to https://api.slack.com/methods/oauth.v2.access
 from pydantic import validator
 
 from app.configs import settings
-from app.core.schemas import Schema
+from app.core.service import Schema
 
 
-class AccessRequest(Schema):
+class AccessInput(Schema):
     """Request spec
     client_id: string(Optional)
     client_secret: string(Optional)
@@ -36,57 +36,3 @@ class AccessRequest(Schema):
         if v != settings.SLACK_CLIENT_SECRET:
             raise ValueError("Invalid client_secret")
         return v
-
-
-class AccessResponse(Schema):
-    """Response spec
-    {
-        "ok": true,
-        "access_token": "xoxb-17653672481-19874698323-pdFZKVeTuE8sk7oOcBrzbqgy",
-        "token_type": "bot",
-        "scope": "commands,incoming-webhook",
-        "bot_user_id": "U0KRQLJ9H",
-        "app_id": "A0KRD7HC3",
-        "team": {
-            "name": "Slack Softball Team",
-            "id": "T9TK3CUKW"
-        },
-        "enterprise": {
-            "name": "slack-sports",
-            "id": "E12345678"
-        },
-        "authed_user": {
-            "id": "U1234",
-            "scope": "chat:write",
-            "access_token": "xoxp-1234",
-            "token_type": "user"
-        }
-    }
-    """
-
-    class Team(Schema):
-        name: str
-        id: str
-
-    class Enterprise(Schema):
-        name: str
-        id: str
-
-    class AuthedUser(Schema):
-        id: str
-        scope: str
-        access_token: str
-        token_type: str
-
-    ok: bool
-    access_token: str
-    token_type: str
-    scope: str
-    bot_user_id: str
-    app_id: str
-    team: Team
-    enterprise: Enterprise | None = None
-    authed_user: AuthedUser | None = None
-
-    class Config:
-        orm_mode = True

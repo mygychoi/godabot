@@ -1,8 +1,7 @@
 import pytest
 
-from app.access.repositories import AccessCommandRepository, AccessQueryRepository
-from app.access.schemas import AccessRequest
-from app.access.services import AccessCommandService, AccessQueryService
+from app.access.schemas import AccessInput
+from app.access.services import AccessCommandService
 from app.configs import settings
 from tests.pool import with_pool
 
@@ -10,25 +9,23 @@ from .clients import AccessTestClient
 
 
 @pytest.fixture
-def access_request():
-    return AccessRequest(
-        client_secret=settings.SLACK_CLIENT_SECRET, client_id=settings.SLACK_CLIENT_ID, code="test"
+def input():
+    return AccessInput(
+        client_secret=settings.SLACK_CLIENT_SECRET,
+        client_id=settings.SLACK_CLIENT_ID,
+        code="test",
     )
 
 
 @pytest.fixture
 def commander():
-    return AccessCommandService(
-        querier=AccessQueryService(repository=AccessQueryRepository()),
-        repository=AccessCommandRepository(),
-        client=AccessTestClient(),
-    )
+    return AccessCommandService(client=AccessTestClient())
 
 
 @with_pool
 @pytest.mark.asyncio
-async def test_activation(access_request: AccessRequest, commander: AccessCommandService):
-    active_access = await commander.activate(request=access_request)
+async def test_activation(input: AccessInput, commander: AccessCommandService):
+    active_access = await commander.activate(input=input)
     assert active_access.is_active is True
     assert active_access.created_at is not None
     assert active_access.updated_at is None

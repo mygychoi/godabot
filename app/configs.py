@@ -2,8 +2,11 @@ import tomllib
 from enum import Enum
 from typing import Any
 
+import openai
+import sentry_sdk
 from pydantic import BaseSettings, Extra, PostgresDsn
 from pydantic.env_settings import SettingsSourceCallable
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 
 def pyproject_settings(setting: BaseSettings) -> dict[str, Any]:  # noqa
@@ -69,3 +72,15 @@ class Settings(BaseSettings):
 
 
 settings = Settings()  # type: ignore
+
+# OpenAI setups
+openai.api_key = settings.OPENAI_API_KEY
+openai.organization = settings.OPENAI_ORGANIZATION
+
+# Sentry setups
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    traces_sample_rate=0.2,
+    integrations=[FastApiIntegration(transaction_style="url")],
+    environment=settings.ENV.value,
+)

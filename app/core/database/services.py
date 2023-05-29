@@ -1,4 +1,4 @@
-from app.core.services import Service
+from app.core.service import Service
 
 from .repositories import CommandRepository
 from .transaction import TransactionManager

@@ -4,7 +4,7 @@ from pydantic import Field
 
 from app.core.database import Model
 
-from .schemas import AccessResponse
+from .forms import AccessFormResult
 
 
 class Access(Model):
@@ -28,10 +28,10 @@ class Access(Model):
     )
 
     @classmethod
-    def parse_response(cls, *, response: AccessResponse) -> "Access":
-        team = response.team
-        access = cls(team_id=team.id, team_name=team.name, token=response.access_token)
-        if response.enterprise is not None:
-            access.organization_id = response.enterprise.id
-            access.organization_name = response.enterprise.name
+    def parse_result(cls, *, result: AccessFormResult) -> "Access":
+        team = result.team
+        access = cls(team_id=team.id, team_name=team.name, token=result.access_token)
+        if result.enterprise is not None:
+            access.organization_id = result.enterprise.id
+            access.organization_name = result.enterprise.name
         return access

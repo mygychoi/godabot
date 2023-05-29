@@ -1,27 +1,28 @@
 import asyncio
 
 from app.access import AccessQueryService
-from app.bot import BotClientService, File, Message
+from app.bot import BotClientService, FileInput, MessageInput
 from app.core.database import CommandService, QueryService
-from app.core.services import Service
-from app.gpt import GptClientService
+from app.core.service import Service
+from app.nlp import GptClientService
 from app.vision import StabilityClientService
 
 from .models import Slashcommand
 from .repositories import SlashcommandCommandRepository
-from .schemas import SlashcommandForm
+from .schemas import SlashcommandInput
 
 
 class SlashcommandQueryService(QueryService):
     access_querier: AccessQueryService = AccessQueryService()
     bot_clienteer: BotClientService = BotClientService()
 
-    async def echo(self, *, form: SlashcommandForm):
-        acknowledging = asyncio.create_task(self.bot_clienteer.acknowledge(url=form.response_url))
-        access = await self.access_querier.get_by_team_id(team_id=form.team_id)
-        message = Message(token=access.token, channel_id=form.channel_id, text=form.text)
-        posting = asyncio.create_task(self.bot_clienteer.post_message(message=message))
-        await asyncio.gather(acknowledging, posting)
+    async def echo(self, *, input: SlashcommandInput):
+        access = await self.access_querier.get_by_team_id(team_id=input.team_id)
+        message = MessageInput(channel_id=input.channel_id, text=input.text)
+        await asyncio.gather(
+            self.bot_clienteer.post_message(token=access.token, message=message),
+            self.bot_clienteer.acknowledge(url=input.response_url),
+        )
 
 
 class SlashcommandCommandService(CommandService):
@@ -39,32 +40,29 @@ class SlashcommandService(Service):
     gpt_clienteer: GptClientService = GptClientService()
     stability_clienteer: StabilityClientService = StabilityClientService()
 
-    async def chat(self, *, form: SlashcommandForm):
-        acknowledging = asyncio.create_task(self.bot_clienteer.acknowledge(url=form.response_url))
-        answer, access = await asyncio.gather(
-            self.gpt_clienteer.answer_for(prompt=form.text),
-            self.access_querier.get_by_team_id(team_id=form.team_id),
+    async def chat(self, *, input: SlashcommandInput):
+        access, answer, *_ = await asyncio.gather(
+            self.access_querier.get_by_team_id(team_id=input.team_id),
+            self.gpt_clienteer.answer_for(prompt=input.text),
+            self.bot_clienteer.acknowledge(url=input.response_url),
+            self.commander.create(slashcommand=Slashcommand.parse_obj(obj=input)),
         )
-        answer = f"Here is my answer for *{form.text}*\n\n{answer}"
-        message = Message(token=access.token, channel_id=form.channel_id, text=answer)
-        posting = self.bot_clienteer.post_message(message=message)
-        logging = self.commander.create(slashcommand=Slashcommand.parse_obj(obj=form))
-        await asyncio.gather(acknowledging, posting, logging)
+        answer = f"Here is my answer for *{input.text}*\n\n{answer}"
+        message = MessageInput(channel_id=input.channel_id, text=answer)
+        await self.bot_clienteer.post_message(token=access.token, message=message)
 
-    async def draw(self, *, form: SlashcommandForm):
-        await asyncio.gather(
-            self.bot_clienteer.acknowledge(url=form.response_url),
-            self.commander.create(slashcommand=Slashcommand.parse_obj(obj=form)),
+    async def draw(self, *, input: SlashcommandInput):
+        """Access checking should be prioritized considering api cost is expensive"""
+        access = await self.access_querier.get_by_team_id(team_id=input.team_id)
+        image, *_ = await asyncio.gather(
+            self.stability_clienteer.generate_for(prompt=input.text),
+            self.bot_clienteer.acknowledge(url=input.response_url),
+            self.commander.create(slashcommand=Slashcommand.parse_obj(obj=input)),
         )
-        image, access = await asyncio.gather(
-            self.stability_clienteer.generate_image(prompt=form.text),
-            self.access_querier.get_by_team_id(team_id=form.team_id),
-        )
-        file = File(
-            token=access.token,
-            channel_id=form.channel_id,
-            file_name=form.text,
+        file = FileInput(
+            channel_id=input.channel_id,
             file=image,
-            initial_comment=f"I just drew for *{form.text}*!",
+            file_name=input.text,
+            initial_comment=f"I just drew for *{input.text}*!",
         )
-        await self.bot_clienteer.post_file(file=file)
+        await self.bot_clienteer.post_file(token=access.token, file=file)

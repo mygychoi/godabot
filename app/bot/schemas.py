@@ -1,22 +1,20 @@
-from app.core.schemas import Schema
+from app.core.service import Schema
 
 
-class Block(Schema):
+class BlockInput(Schema):
     """TODO: Implement Slack BlockKit interface"""
 
     pass
 
 
-class Message(Schema):
-    token: str
+class MessageInput(Schema):
     channel_id: str
     text: str
-    blocks: list[Block] = []
+    blocks: list[BlockInput] = []
 
 
-class File(Schema):
-    token: str
+class FileInput(Schema):
     channel_id: str
-    file_name: str
     file: bytes
+    file_name: str
     initial_comment: str

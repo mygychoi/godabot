@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Extra
 
-from .registry import Registry
+from app.core.registry import Registry
 
 
 class Service(BaseModel, Registry):
     class Config:
         frozen = True
-        extra = Extra.ignore
+        extra = Extra.forbid

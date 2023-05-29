@@ -1,9 +1,13 @@
+from app.core.cache import rlu
 from app.core.database import CommandRepository, QueryRepository
 
 from .models import Access
 
+access_rlu = rlu[Access]
+
 
 class AccessQueryRepository(QueryRepository):
+    @access_rlu(key="team_id")
     async def get_by_team_id(self, *, team_id: str) -> Access:
         record = await self.connection().fetchrow(
             """

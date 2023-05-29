@@ -5,11 +5,11 @@ refer to https://api.slack.com/interactivity/slash-commands
 from enum import Enum
 from typing import Annotated
 
-from fastapi import Form
+from fastapi import Form as RouterForm
 from pydantic import HttpUrl, validator
 
 from app.configs import settings
-from app.core.schemas import Schema
+from app.core.service import Schema
 
 
 class Command(str, Enum):
@@ -18,7 +18,7 @@ class Command(str, Enum):
     DRAW = "/godabot-draw"
 
 
-class SlashcommandForm(Schema):
+class SlashcommandInput(Schema):
     """
     token=gIkuvaNzQIHg97ATvDxqgjtO
     &team_id=T0001
@@ -37,26 +37,26 @@ class SlashcommandForm(Schema):
 
     """
 
-    command: Annotated[Command, Form()]
-    text: Annotated[str, Form()]
+    command: Annotated[Command, RouterForm()]
+    text: Annotated[str, RouterForm()]
 
-    team_id: Annotated[str, Form()]
-    team_domain: Annotated[str, Form()]
+    team_id: Annotated[str, RouterForm()]
+    team_domain: Annotated[str, RouterForm()]
 
-    enterprise_id: Annotated[str | None, Form()] = None
-    enterprise_name: Annotated[str | None, Form()] = None
+    enterprise_id: Annotated[str | None, RouterForm()] = None
+    enterprise_name: Annotated[str | None, RouterForm()] = None
 
-    user_id: Annotated[str, Form()]
-    user_name: Annotated[str, Form()]
+    user_id: Annotated[str, RouterForm()]
+    user_name: Annotated[str, RouterForm()]
 
-    channel_id: Annotated[str, Form()]
-    channel_name: Annotated[str, Form()]
+    channel_id: Annotated[str, RouterForm()]
+    channel_name: Annotated[str, RouterForm()]
 
-    response_url: Annotated[HttpUrl, Form()]
-    api_app_id: Annotated[str, Form()]
+    response_url: Annotated[HttpUrl, RouterForm()]
+    api_app_id: Annotated[str, RouterForm()]
 
-    trigger_id: Annotated[str | None, Form()]
-    token: Annotated[str | None, Form()] = None  # deprecated
+    trigger_id: Annotated[str | None, RouterForm()]
+    token: Annotated[str | None, RouterForm()] = None  # deprecated
 
     @validator("api_app_id", pre=True)
     def validate_api_app_id(cls, v):

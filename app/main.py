@@ -1,23 +1,10 @@
-import openai
-import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app import access, slashcommand
 from app.configs import settings
 from app.core.database.pool import PoolManager
 from app.core.middleware import TrustedRequestMiddleware
-
-openai.api_key = settings.OPENAI_API_KEY
-openai.organization = settings.OPENAI_ORGANIZATION
-
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    traces_sample_rate=0.2,
-    integrations=[FastApiIntegration(transaction_style="url")],
-    environment=settings.ENV.value,
-)
 
 godabot = FastAPI(
     title=settings.NAME,

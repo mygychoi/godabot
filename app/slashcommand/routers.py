@@ -2,32 +2,32 @@ from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
 
-from .schemas import SlashcommandForm
+from .schemas import SlashcommandInput
 from .services import SlashcommandQueryService, SlashcommandService
 
-SlashcommandFormDep = Annotated[SlashcommandForm, Depends(SlashcommandForm)]
+SlashcommandInputDep = Annotated[SlashcommandInput, Depends(SlashcommandInput)]
 
 router = APIRouter(prefix="/slashcommands", tags=["Slachcommand"])
 
 
 @router.post("/echo")
-async def echo(form: SlashcommandFormDep) -> Response:
+async def echo(input: SlashcommandInputDep) -> Response:
     querier = SlashcommandQueryService()
-    await querier.echo(form=form)
+    await querier.echo(input=input)
     return Response(status_code=204)
 
 
 @router.post("/chat")
-async def chat(form: SlashcommandFormDep, background_tasks: BackgroundTasks) -> Response:
+async def chat(input: SlashcommandInputDep, background_tasks: BackgroundTasks) -> Response:
     commander = SlashcommandService()
-    background_tasks.add_task(commander.chat, form=form)
+    background_tasks.add_task(commander.chat, input=input)
     return Response(status_code=200, content="Thanks! Please wait for a second...")
 
 
 @router.post("/draw")
-async def draw(form: SlashcommandFormDep, background_tasks: BackgroundTasks) -> Response:
+async def draw(input: SlashcommandInputDep, background_tasks: BackgroundTasks) -> Response:
     commander = SlashcommandService()
-    background_tasks.add_task(commander.draw, form=form)
+    background_tasks.add_task(commander.draw, input=input)
     return Response(
         status_code=200,
         content="Thanks! I am drawing now, Please wait for a second...",

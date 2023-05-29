@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .registry import Registry
+from app.core.registry import Registry
 
 
 class Schema(BaseModel, Registry):

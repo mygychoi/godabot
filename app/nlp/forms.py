@@ -4,10 +4,10 @@ refer to https://platform.openai.com/docs/api-reference/chat/create
 
 from enum import Enum
 
-from app.core.schemas import Schema
+from app.core.client import Form
 
 
-class ChatModel(str, Enum):
+class Model(str, Enum):
     gpt3dot5 = "gpt-3.5-turbo"
 
 
@@ -17,21 +17,30 @@ class Role(str, Enum):
     user = "user"
 
 
-class Message(Schema):
+class MessageForm(Form):
     role: Role
     content: str
 
 
-class ChatCompletionRequest(Schema):
-    model: ChatModel = ChatModel.gpt3dot5
-    messages: list[Message]
+class ChatCompletionForm(Form):
+    model: Model = Model.gpt3dot5
+    messages: list[MessageForm]
     max_tokens: int = 512
     temperature: float = 1.0
     top_p: float = 1.0
     n: int = 1
 
+    @classmethod
+    def from_prompt(cls, *, prompt: str) -> "ChatCompletionForm":
+        return cls(
+            messages=[
+                MessageForm(role=Role.system, content="You are a helpful chatbot named godabot."),
+                MessageForm(role=Role.user, content=prompt),
+            ]
+        )
 
-class ChatCompletionResponse(Schema):
+
+class ChatCompletionFormResult(Form):
     """{
       "id": "chatcmpl-123",
       "object": "chat.completion",
@@ -52,12 +61,12 @@ class ChatCompletionResponse(Schema):
     }
     """
 
-    class Choice(Schema):
+    class ChoiceForm(Form):
         index: int
-        message: Message
+        message: MessageForm
         finish_reason: str
 
-    class Usage(Schema):
+    class UsageForm(Form):
         prompt_tokens: int
         completion_tokens: int
         total_tokens: int
@@ -65,11 +74,12 @@ class ChatCompletionResponse(Schema):
     id: str
     object: str
     created: int
-    choices: list[Choice]
-    usage: Usage
+    choices: list[ChoiceForm]
+    usage: UsageForm
 
     class Config:
         orm_mode = True
 
-    def answer(self):
+    @property
+    def answer(self) -> str:
         return "".join(choice.message.content for choice in self.choices)
