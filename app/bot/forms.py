@@ -4,7 +4,7 @@ from .schemas import FileInput
 
 
 class FileForm(Form):
-    channel_id: str
+    channel: str
     file_name: str
     file: bytes
     title: str
