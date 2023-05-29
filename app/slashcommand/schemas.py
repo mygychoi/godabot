@@ -49,8 +49,8 @@ class SlashcommandInput(Schema):
     user_id: Annotated[str, RouterForm()]
     user_name: Annotated[str, RouterForm()]
 
-    channel_id: Annotated[str, RouterForm()]
-    channel_name: Annotated[str, RouterForm()]
+    channel_id: Annotated[str | None, RouterForm()] = None
+    channel_name: Annotated[str | None, RouterForm()] = None
 
     response_url: Annotated[HttpUrl, RouterForm()]
     api_app_id: Annotated[str, RouterForm()]
@@ -63,3 +63,7 @@ class SlashcommandInput(Schema):
         if v != settings.SLACK_API_APP_ID:
             raise ValueError("Invalid api_app_id")
         return v
+
+    @property
+    def destination(self) -> str:
+        return self.channel_id or self.user_id

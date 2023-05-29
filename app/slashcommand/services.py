@@ -18,7 +18,7 @@ class SlashcommandQueryService(QueryService):
 
     async def echo(self, *, input: SlashcommandInput):
         access = await self.access_querier.get_by_team_id(team_id=input.team_id)
-        message = MessageInput(channel_id=input.channel_id, text=input.text)
+        message = MessageInput(channel_id=input.destination, text=input.text)
         await asyncio.gather(
             self.bot_clienteer.post_message(token=access.token, message=message),
             self.bot_clienteer.acknowledge(url=input.response_url),
@@ -48,7 +48,7 @@ class SlashcommandService(Service):
             self.commander.create(slashcommand=Slashcommand.parse_obj(obj=input)),
         )
         answer = f"Here is my answer for *{input.text}*\n\n{answer}"
-        message = MessageInput(channel_id=input.channel_id, text=answer)
+        message = MessageInput(channel_id=input.destination, text=answer)
         await self.bot_clienteer.post_message(token=access.token, message=message)
 
     async def draw(self, *, input: SlashcommandInput):
@@ -60,7 +60,7 @@ class SlashcommandService(Service):
             self.commander.create(slashcommand=Slashcommand.parse_obj(obj=input)),
         )
         file = FileInput(
-            channel_id=input.channel_id,
+            channel_id=input.destination,
             file=image,
             file_name=input.text,
             initial_comment=f"I just drew for *{input.text}*!",
