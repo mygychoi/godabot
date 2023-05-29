@@ -3,6 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.exception_handlers import request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from app import access, home, slashcommand
 from app.configs import settings
@@ -23,6 +24,7 @@ godabot = FastAPI(
 
 # Middlewares
 if settings.ENV == settings.PROD:
+    godabot.add_middleware(HTTPSRedirectMiddleware)
     godabot.add_middleware(TrustedRequestMiddleware)
 
 
