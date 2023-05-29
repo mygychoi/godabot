@@ -5,7 +5,6 @@ from app.core.database import CommandService, QueryService
 from .clients import AccessClient
 from .models import Access
 from .repositories import AccessCommandRepository, AccessQueryRepository
-from .schemas import AccessInput
 
 
 class AccessQueryService(QueryService):
@@ -20,8 +19,8 @@ class AccessCommandService(CommandService):
     repository: AccessCommandRepository = AccessCommandRepository()
     client: AccessClient = AccessClient()
 
-    async def activate(self, *, input: AccessInput) -> Access:
-        result = await self.client.acquire_access(code=input.code)
+    async def activate(self, *, code: str) -> Access:
+        result = await self.client.acquire_access(code=code)
         if not result.ok:
             raise HTTPException(status_code=403, detail="Failed")
         access = Access.parse_result(result=result)

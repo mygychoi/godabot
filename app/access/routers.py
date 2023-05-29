@@ -1,18 +1,15 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 
-from .schemas import AccessInput
 from .services import AccessCommandService
 
 router = APIRouter(prefix="/accesses", tags=["Access"])
 
 
 @router.get("/activate")
-async def activate(input: Annotated[AccessInput, Depends(AccessInput)]) -> RedirectResponse:
+async def activate(code: str) -> RedirectResponse:
     commander = AccessCommandService()
-    access = await commander.activate(input=input)
+    access = await commander.activate(code=code)
     return RedirectResponse(f"https://app.slack.com/client/{access.team_id}")
 
 
