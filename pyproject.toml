@@ -13,10 +13,13 @@ classifiers = ["Development Status :: 1 - Planning", "Programming Language :: Py
 dependencies = []
 
 [project.urls]
-homepage = ""
-documentation = ""
-repository = "https://github.com/yours"
-changelog = "https://github.com/yours/CHANGELOG.md"
+homepage = "https://godabot.herokuapp.com"
+documentation = "https://godabot.herokuapp.com/docs"
+repository = "https://github.com/godabot/godabot"
+releases = "https://github.com/godabot/godabot/releases"
+privacy = "https://godabot.herokuapp.com/privacy"
+terms = "https://godabot.herokuapp.com/terms"
+
 
 # Isort
 [tool.isort]

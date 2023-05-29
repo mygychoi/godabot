@@ -1,0 +1,17 @@
+<div>
+    <h3 class="float-md-start mb-0">Godabot</h3>
+    <nav class="nav nav-masthead justify-content-center float-md-end">
+        <a href="{{ url_for("home") }}"
+           class="nav-link fw-bold py-1 px-0 {% if request.path == "/" %}active{% endif %}">
+            Home
+        </a>
+        <a href="{{ url_for("terms") }}"
+           class="nav-link fw-bold py-1 px-0 {% if request.path == "/terms" %}active{% endif %}">
+            Terms of service
+        </a>
+        <a href="{{ url_for("privacy") }}"
+           class="nav-link fw-bold py-1 px-0 {% if request.path == "/privacy" %}active{% endif %}">
+            Privacy
+        </a>
+    </nav>
+</div>

@@ -4,14 +4,16 @@ from typing import Any
 
 import openai
 import sentry_sdk
-from pydantic import BaseSettings, Extra, PostgresDsn
+from pydantic import BaseSettings, Extra, HttpUrl, PostgresDsn
 from pydantic.env_settings import SettingsSourceCallable
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 
 def pyproject_settings(setting: BaseSettings) -> dict[str, Any]:  # noqa
     with open("pyproject.toml", mode="rb") as pyproject:
-        project_table: dict[str, Any] = tomllib.load(pyproject)["project"]
+        project_table = tomllib.load(pyproject)["project"]
+        for key, value in project_table["urls"].items():
+            project_table[key] = value
         return {key.upper(): value for key, value in project_table.items()}
 
 
@@ -51,6 +53,14 @@ class Settings(BaseSettings):
     DESCRIPTION: str
     AUTHORS: list[dict[str, str | Any]]
     LICENSE: str
+
+    # Urls
+    HOMEPAGE: HttpUrl
+    DOCUMENTATION: HttpUrl
+    REPOSITORY: HttpUrl
+    RELEASES: HttpUrl
+    PRIVACY: HttpUrl
+    TERMS: HttpUrl
 
     class Config:
         env_file = ".env"
