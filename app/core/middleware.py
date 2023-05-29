@@ -21,6 +21,7 @@ def calculate_signature(*, timestamp: str, body: bytes) -> str:
 
 class ValidSignatureMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        return await call_next(request)
         if request.method == "POST":
             timestamp = request.headers["X-Slack-Request-Timestamp"]
             signature = request.headers["X-Slack-Signature"]
