@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.exception_handlers import request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app import access, home, slashcommand
 from app.configs import settings
@@ -28,6 +29,9 @@ if settings.ENV == settings.PROD:
     godabot.add_middleware(HTTPSRedirectMiddleware)
     godabot.add_middleware(ValidSignatureMiddleware)
 
+# Static
+godabot.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # Logging
 @godabot.exception_handler(RequestValidationError)
@@ -37,9 +41,9 @@ async def log_request_validation_error(request, exc):
 
 
 # Domains
+godabot.include_router(router=home.router)
 godabot.include_router(router=access.router)
 godabot.include_router(router=slashcommand.router)
-godabot.mount(path="/", app=home.app)
 
 # Tests
 if settings.ENV == settings.DEV:
