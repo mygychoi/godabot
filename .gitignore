@@ -8,4 +8,4 @@
 .env
 
 # Bootstrap
-app/home/static/bootstrap/
+static/bootstrap/
