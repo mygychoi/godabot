@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from .models import Temp
 from .services import TempCommandService, TempQueryService
 
-router = APIRouter(prefix="/temps", tags=["Temp"])
+router = APIRouter(prefix="/tests/temps", tags=["Temp"])
 
 
 @router.get("/{id}")

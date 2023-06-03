@@ -2,7 +2,7 @@ import pytest
 
 from app.access.services import AccessCommandService
 from app.configs import settings  # noqa
-from tests.pool import with_pool
+from tests.test_core.test_database import with_pool
 
 from .clients import AccessTestClient
 

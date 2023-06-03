@@ -1,7 +1,10 @@
 import asyncio
 
 from app.core.database import CommandService, QueryService
-from tests.test_database.repositories import TempCommandRepository, TempQueryRepository
+from tests.test_core.test_database.repositories import (
+    TempCommandRepository,
+    TempQueryRepository,
+)
 
 
 class TempQueryService(QueryService):

@@ -1,6 +1,6 @@
 import pytest
 
-from tests.pool import with_pool
+from tests.test_core.test_database import with_pool
 
 from .models import Temp
 from .repositories import TempCommandRepository, TempQueryRepository

@@ -4,7 +4,7 @@ import random
 import pytest
 
 from app.core.autils import atimer
-from tests.pool import with_pool
+from tests.test_core.test_database import with_pool
 
 from .repositories import TempCommandRepository, TempQueryRepository
 from .services import TempAggregateService, TempCommandService, TempQueryService
