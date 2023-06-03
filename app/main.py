@@ -1,8 +1,4 @@
-import logging
-
 from fastapi import FastAPI
-from fastapi.exception_handlers import request_validation_exception_handler
-from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -32,21 +28,7 @@ if settings.ENV == settings.PROD:
 # Static
 godabot.mount("/static", StaticFiles(directory="static"), name="static")
 
-
-# Logging
-@godabot.exception_handler(RequestValidationError)
-async def log_request_validation_error(request, exc):
-    logging.error(exc)
-    return await request_validation_exception_handler(request, exc)
-
-
 # Domains
 godabot.include_router(router=home.router)
 godabot.include_router(router=access.router)
 godabot.include_router(router=slashcommand.router)
-
-# Tests
-if settings.ENV == settings.DEV:
-    from tests import test_database
-
-    godabot.include_router(router=test_database.routers.router)
