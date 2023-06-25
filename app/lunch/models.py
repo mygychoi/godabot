@@ -51,7 +51,7 @@ class Attendance(TimestampModel):
     lunch_id: int | None = Field(default=None)
 
     # Related
-    roulette: Roulette
+    roulette: Roulette | None = None
 
     def __str__(self) -> str:
         return f"user_id:{self.user_id}, user_name:{self.user_name}, preference:{self.preference}"
