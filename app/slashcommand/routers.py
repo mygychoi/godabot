@@ -46,8 +46,10 @@ async def lunch(input: SlashcommandChannelInputDep):
     match input.text:
         case "--open":
             await servicer.open_roulette(input=input)
+            return Response(status_code=204)
         case "--cancel":
             await servicer.cancel_roulette(input=input)
+            return Response(status_code=200, content="Roulette is cancel.")
         case "--spin":
             asyncio.create_task(servicer.spin_roulette_until_success(input=input))
             return Response(
@@ -56,5 +58,4 @@ async def lunch(input: SlashcommandChannelInputDep):
             )
         case _:
             await servicer.join_roulette(input=input)
-
-    return Response(status_code=204)
+            return Response(status_code=204)

@@ -109,10 +109,20 @@ class SlashcommandLunchRouletteService(Service):
         roulette = await self.roulette_querier.get_scheduled_by_channel_id(
             channel_id=input.channel_id
         )
-        await self.roulette_commander.spin_until_success(roulette=roulette)
-        blockkit = RouletteSpunBlockKit(roulette=roulette)
-        message = MessageInput(channel_id=input.channel_id, text="...", blocks=blockkit.blocks())
-        await self.bot_clienteer.post_message(token=access.token, message=message)
+        if len(roulette.attendances) < 2:
+            await self.roulette_commander.cancel(roulette=roulette)
+            message = MessageInput(
+                channel_id=input.channel_id,
+                text="Sorry, there are no sufficient attendees. Roulette is canceled",
+            )
+            await self.bot_clienteer.post_message(token=access.token, message=message)
+        else:
+            await self.roulette_commander.spin_until_success(roulette=roulette)
+            blockkit = RouletteSpunBlockKit(roulette=roulette)
+            message = MessageInput(
+                channel_id=input.channel_id, text="...", blocks=blockkit.blocks()
+            )
+            await self.bot_clienteer.post_message(token=access.token, message=message)
 
     async def join_roulette(self, *, input: SlachcommandChannelInput):
         access = await self.access_querier.get_by_team_id(team_id=input.team_id)

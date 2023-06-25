@@ -98,7 +98,7 @@ class RouletteCommandService(CommandService):
                 success = True
             finally:
                 if attempt > threshold:
-                    logging.error(
+                    raise RouletteSpinFailed(
                         f"Spinning Failed with {attempt} attempts and {threshold} threshold"
                     )
 
