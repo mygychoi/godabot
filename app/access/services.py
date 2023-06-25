@@ -24,7 +24,7 @@ class AccessCommandService(CommandService):
         if not result.ok:
             raise HTTPException(status_code=403, detail="Failed")
         access = Access.parse_result(result=result)
-        async with self.transaction():
+        async with self.transaction(self.repository):
             return await self.repository.save(access=access)
 
     async def deactivate(self, *, team_id: str) -> Access:
@@ -33,9 +33,9 @@ class AccessCommandService(CommandService):
             return access
         else:
             access.is_active = False
-            async with self.transaction():
+            async with self.transaction(self.repository):
                 return await self.repository.save(access=access)
 
     async def delete(self, *, team_id: str):
-        async with self.transaction():
+        async with self.transaction(self.repository):
             await self.repository.delete(team_id=team_id)

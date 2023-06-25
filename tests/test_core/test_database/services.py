@@ -21,24 +21,24 @@ class TempCommandService(CommandService):
     repository: TempCommandRepository = TempCommandRepository()
 
     async def create(self, *, name: str):
-        async with self.transaction():
+        async with self.transaction(self.repository):
             return await self.repository.create(name=name)
 
     async def nested_create(self, *, name: str):
         temps = []
-        async with self.transaction():
+        async with self.transaction(self.repository):
             temps.append(await self.repository.create(name=name))
             temps.append(await self.repository.create(name=name))
-            async with self.transaction():
+            async with self.transaction(self.repository):
                 temps.append(await self.repository.create(name=name))
                 temps.append(await self.repository.create(name=name))
-                async with self.transaction():
+                async with self.transaction(self.repository):
                     temps.append(await self.repository.create(name=name))
                     temps.append(await self.repository.create(name=name))
                     return temps
 
     async def delete(self, *, id: int):
-        async with self.transaction():
+        async with self.transaction(self.repository):
             await self.repository.delete(id=id)
 
 

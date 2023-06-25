@@ -39,6 +39,9 @@ class TransactionManager:
         else:
             return cls.create(repository=repository)
 
+    def add(self, *, repository: CommandRepository):
+        self._managers[repository] = self
+
     async def __aenter__(self):
         if self._connection is None:
             self._connection = await PoolManager.acquire()

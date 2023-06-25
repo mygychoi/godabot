@@ -1,15 +1,20 @@
 from app.core.service import Service
 
-from .repositories import CommandRepository
+from .repositories import CommandRepository, QueryRepository
 from .transaction import TransactionManager
 
 
 class QueryService(Service):
-    pass
+    repository: QueryRepository
 
 
 class CommandService(Service):
     repository: CommandRepository
 
-    def transaction(self) -> TransactionManager:
-        return TransactionManager.get_or_create(repository=self.repository)
+    @staticmethod
+    def transaction(*repositories: CommandRepository) -> TransactionManager:
+        first, *remains = repositories
+        transaction_manager = TransactionManager.get_or_create(repository=first)
+        for repository in remains:
+            transaction_manager.add(repository=repository)
+        return transaction_manager

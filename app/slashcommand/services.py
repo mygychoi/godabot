@@ -29,7 +29,7 @@ class SlashcommandCommandService(CommandService):
     repository: SlashcommandCommandRepository = SlashcommandCommandRepository()
 
     async def create(self, *, slashcommand: Slashcommand):
-        async with self.transaction():
+        async with self.transaction(self.repository):
             return await self.repository.insert(slashcommand=slashcommand)
 
 
