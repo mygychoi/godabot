@@ -9,7 +9,7 @@ from .forms import FileForm
 
 class BotClient(Client):
     @staticmethod
-    async def post_message(*, token: str, channel_id: str, text: str, blocks: list):
+    async def post_message(*, token: str, channel_id: str, text: str, blocks: list[dict]):
         client = AsyncWebClient(token=token)
         await client.chat_postMessage(channel=channel_id, text=text, blocks=blocks)
 
