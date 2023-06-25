@@ -66,7 +66,9 @@ class RouletteCommandService(CommandService):
         try:
             lunches = RouletteSpunForm.parse_raw(answer).lunches
         except ValidationError as error:
-            raise RouletteSpinFailed(f"Spinning was failed from {roulette.title}") from error
+            raise RouletteSpinFailed(
+                f"Spinning was failed from {roulette.title} error: {error}"
+            ) from error
         else:
             async with self.transaction(
                 self.repository,
@@ -83,7 +85,7 @@ class RouletteCommandService(CommandService):
     async def spin_until_success(self, *, roulette: Roulette, threshold: int = 5):
         if threshold > 5:
             raise ValueError(f"Too high {threshold} threshold")
-        attempt = 0
+        attempt = 1
         temperature = 1.0
         success = False
         while not success and attempt <= threshold:
