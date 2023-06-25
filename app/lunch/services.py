@@ -115,12 +115,11 @@ class AttendanceCommandService(CommandService):
     async def join_roulette(
         self,
         *,
-        channel_id: str,
         user_id: str,
         user_name: str,
         preference: str,
+        roulette: Roulette,
     ) -> Attendance:
-        roulette = await self.roulette_querier.get_scheduled_by_channel_id(channel_id=channel_id)
         async with self.transaction(self.repository):
             attendance = Attendance(
                 user_id=user_id,

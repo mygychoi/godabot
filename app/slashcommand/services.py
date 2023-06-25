@@ -116,12 +116,27 @@ class SlashcommandLunchRouletteService(Service):
 
     async def join_roulette(self, *, input: SlachcommandChannelInput):
         access = await self.access_querier.get_by_team_id(team_id=input.team_id)
-        attendance = await self.attendance_commander.join_roulette(
-            channel_id=input.channel_id,
-            user_id=input.user_id,
-            user_name=input.user_name,
-            preference=input.text,
-        )
-        blockkit = AttendanceJoinedBlockKit(attendance=attendance)
-        message = MessageInput(channel_id=input.channel_id, text="...", blocks=blockkit.blocks())
-        await self.bot_clienteer.post_message(token=access.token, message=message)
+        if not await self.roulette_querier.is_scheduled_by_channel_id(channel_id=input.channel_id):
+            await self.bot_clienteer.post_message(
+                token=access.token,
+                message=MessageInput(
+                    channel_id=input.channel_id,
+                    text="Sorry, there is no open lunch roulette. "
+                    "Please ask @Goda to open a roulette for this channel.",
+                ),
+            )
+        else:
+            roulette = await self.roulette_querier.get_scheduled_by_channel_id(
+                channel_id=input.channel_id
+            )
+            attendance = await self.attendance_commander.join_roulette(
+                user_id=input.user_id,
+                user_name=input.user_name,
+                preference=input.text,
+                roulette=roulette,
+            )
+            blockkit = AttendanceJoinedBlockKit(attendance=attendance)
+            message = MessageInput(
+                channel_id=input.channel_id, text="...", blocks=blockkit.blocks()
+            )
+            await self.bot_clienteer.post_message(token=access.token, message=message)
