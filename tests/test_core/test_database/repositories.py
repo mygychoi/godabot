@@ -14,7 +14,7 @@ class TempQueryRepository(QueryRepository):
             """,
             id,
         )
-        return Temp.construct_from(obj=record)
+        return Temp.construct_from(record=record)
 
     @rlu[Temp | None]("id")
     async def get_or_none(self, *, id: int) -> Temp | None:
@@ -26,7 +26,7 @@ class TempQueryRepository(QueryRepository):
             """,
             id,
         )
-        return Temp.construct_from_or_none(obj=record)
+        return Temp.construct_from_or_none(record=record)
 
 
 class TempCommandRepository(CommandRepository):
@@ -39,7 +39,7 @@ class TempCommandRepository(CommandRepository):
             """,
             name,
         )
-        return Temp.construct_from(obj=record)
+        return Temp.construct_from(record=record)
 
     async def delete(self, *, id: int):
         await self.connection().execute(

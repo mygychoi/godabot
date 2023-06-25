@@ -18,4 +18,4 @@ class SlashcommandCommandRepository(CommandRepository):
            """,
             *slashcommand.dict(exclude={"id", "created_at"}).values(),
         )
-        return Slashcommand.construct_from(obj=record)
+        return Slashcommand.construct_from(record=record)

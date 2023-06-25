@@ -8,17 +8,17 @@ from app.core.registry import Registry
 
 class Model(BaseModel, Registry):
     @classmethod
-    def construct_from(cls, *, obj: Record | dict, _fields_set: set | None = None) -> Self:
-        return cls.construct(**obj, _fields_set=_fields_set)
+    def construct_from(cls, *, record: Record | dict, _fields_set: set | None = None) -> Self:
+        return cls.construct(**record, _fields_set=_fields_set)
 
     @classmethod
     def construct_from_or_none(
-        cls, *, obj: Record | dict, _fields_set: set | None = None
+        cls, *, record: Record | dict, _fields_set: set | None = None
     ) -> Self | None:
-        if obj is None:
+        if record is None:
             return None
         else:
-            return cls.construct(**obj, _fields_set=_fields_set)
+            return cls.construct(**record, _fields_set=_fields_set)
 
     @classmethod
     def parse_obj_or_none(cls, *, obj: dict | Record) -> Self | None:

@@ -17,7 +17,7 @@ class AccessQueryRepository(QueryRepository):
             """,
             team_id,
         )
-        return Access.construct_from(obj=record)
+        return Access.construct_from(record=record)
 
 
 class AccessCommandRepository(CommandRepository):
@@ -46,7 +46,7 @@ class AccessCommandRepository(CommandRepository):
            """,
             *access.dict(exclude={"created_at", "updated_at"}).values(),
         )
-        return Access.construct_from(obj=record)
+        return Access.construct_from(record=record)
 
     async def delete(self, *, team_id: str):
         await self.connection().execute(
