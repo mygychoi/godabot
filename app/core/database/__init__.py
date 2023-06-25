@@ -1,4 +1,4 @@
-from .models import Model
+from .models import Model, TimestampModel
 from .pool import PoolManager
 from .repositories import CommandRepository, QueryRepository
 from .services import CommandService, QueryService

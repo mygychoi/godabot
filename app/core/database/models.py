@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Self, TypeVar
 
 from asyncpg import Record
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.core.registry import Registry
+from app.core.timezone import utcnow
 
 
 class Model(BaseModel, Registry):
@@ -40,3 +42,14 @@ class Model(BaseModel, Registry):
 
 
 ModelType = TypeVar("ModelType", bound=Model)
+
+
+class TimestampModel(Model):
+    created_at: datetime = Field(
+        description="timestamp with time zone, not null",
+        default_factory=utcnow,
+    )
+    updated_at: datetime | None = Field(
+        description="timestamp with time zone",
+        default=None,
+    )
