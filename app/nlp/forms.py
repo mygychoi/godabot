@@ -25,18 +25,26 @@ class MessageForm(Form):
 class ChatCompletionForm(Form):
     model: Model = Model.gpt3dot5
     messages: list[MessageForm]
-    max_tokens: int = 512
-    temperature: float = 1.0
     top_p: float = 1.0
     n: int = 1
+    max_tokens: int
+    temperature: float
 
     @classmethod
-    def from_prompt(cls, *, prompt: str) -> "ChatCompletionForm":
+    def from_prompt(
+        cls,
+        *,
+        prompt: str,
+        max_tokens: int,
+        temperature: float,
+    ) -> "ChatCompletionForm":
         return cls(
             messages=[
                 MessageForm(role=Role.system, content="You are a helpful chatbot named godabot."),
                 MessageForm(role=Role.user, content=prompt),
-            ]
+            ],
+            max_tokens=max_tokens,
+            temperature=temperature,
         )
 
 
