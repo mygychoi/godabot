@@ -22,7 +22,7 @@ create index if not exists access_access_created_at_ix
 create index if not exists access_access_is_active_ix
     on public.access_access (is_active desc);
 
-create trigger access_access_refresh_updated_a
+create trigger access_access_refresh_updated_at
     before update
     on public.access_access
     for each row

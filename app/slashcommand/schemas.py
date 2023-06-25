@@ -12,12 +12,6 @@ from app.configs import settings
 from app.core.service import Schema
 
 
-class Command(str, Enum):
-    CHAT = "/godabot"
-    ECHO = "/godabot-echo"
-    DRAW = "/godabot-draw"
-
-
 class SlashcommandInput(Schema):
     """
     token=gIkuvaNzQIHg97ATvDxqgjtO
@@ -34,8 +28,13 @@ class SlashcommandInput(Schema):
     &response_url=https://hooks.slack.com/commands/1234/5678
     &trigger_id=13345224609.738474920.8088930838d88f008e0
     &api_app_id=A123456
-
     """
+
+    class Command(str, Enum):
+        CHAT = "/godabot"
+        ECHO = "/godabot-echo"
+        DRAW = "/godabot-draw"
+        LUNCH = "/godabot-lunch"
 
     command: Annotated[Command, RouterForm()]
     text: Annotated[str, RouterForm()]
@@ -67,3 +66,8 @@ class SlashcommandInput(Schema):
     @property
     def destination(self) -> str:
         return self.channel_id or self.user_id
+
+
+class SlachcommandChannelInput(SlashcommandInput):
+    channel_id: Annotated[str, RouterForm()]
+    channel_name: Annotated[str, RouterForm()]

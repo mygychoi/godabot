@@ -1,0 +1,2 @@
+class RouletteSpinFailed(Exception):
+    pass
