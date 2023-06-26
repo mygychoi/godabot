@@ -33,24 +33,66 @@ Desired format:
 }
 
 Algorithms:
-Each lunch must have at least 2 attendances.
-Each attendance must belong to 1 lunch.
-There is no lunch that has 1 attendance. For example, the following lunch is invalid
-because it has only one attendance.
+Each attendance must belong to only 1 lunch.
+For example the following lunches are invalid because goda belongs to 2 lunches.
 [
-    "roulette_id": 1,
-    "title": Pizza lover,
-    "preference": Pizza,
-    "recommendation": What about Pepperoni pizza?
-    "attendances": [
+    {
+        "roulette_id": 1,
+        "title": Pizza lover,
+        "preference": Pizza,
+        "recommendation": What about Pepperoni pizza?
+        "attendances": [
             {
                 "user_id": u1,
                 "user_name: goda,
                 "preference": pizza
                 "roulette_id: 1,
+            },
+            {
+                "user_id": u2,
+                "user_name: choe,
+                "preference": pizza
+                "roulette_id: 1,
             }
-    ]
+        ]
+    },
+    {
+        "roulette_id": 1,
+        "title": Chicken Party,
+        "preference": Fried chicken,
+        "recommendation": What about crispy fried chicken?
+        "attendances": [
+            {
+                "user_id": u1,
+                "user_name: goda,
+                "preference": pizza
+                "roulette_id: 1,
+            },
+            {
+                "user_id": u3,
+                "user_name: gyu,
+                "preference": chicken
+                "roulette_id: 1,
+            }
+        ]
+    }
 ]
+Each lunch must have at least 2 attendances. That is there is no lunch that has 1 attendance.
+For example, the following lunch is invalid because it has only one attendance.
+{
+    "roulette_id": 1,
+    "title": Pizza lover,
+    "preference": Pizza,
+    "recommendation": What about Pepperoni pizza?
+    "attendances": [
+        {
+            "user_id": u1,
+            "user_name: goda,
+            "preference": pizza
+            "roulette_id: 1,
+        }
+    ]
+}
 
 Text:
 """
