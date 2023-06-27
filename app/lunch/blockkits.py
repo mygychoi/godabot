@@ -24,7 +24,7 @@ def left_context(roulette: Roulette):
 
 
 def howto_context(roulette: Roulette):
-    return Context(elements=[Text(text=":pushpin: Here is *how to join lunch roulette*.")])
+    return Context(elements=[Text(text=":pushpin: Here is *how to join Lunch Mate*.")])
 
 
 class RouletteOpenBlockKit(CardBlockkit):
@@ -36,7 +36,7 @@ class RouletteOpenBlockKit(CardBlockkit):
             Header(
                 text=Text(
                     type=Text.Type.plain_text,
-                    text=":knife_fork_plate: Lunch Roulette is Open! :confetti_ball:",
+                    text=":knife_fork_plate: Lunch Mate is Open! :confetti_ball:",
                 )
             ),
             left_context(roulette=self.roulette),
@@ -72,7 +72,7 @@ class RouletteSpunBlockKit(CardBlockkit):
             Header(
                 text=Text(
                     type=Text.Type.plain_text,
-                    text=":knife_fork_plate: Have a good lunch! :confetti_ball:",
+                    text=":knife_fork_plate: Enjoy your lunch! :confetti_ball:",
                 )
             ),
             Context(
@@ -127,8 +127,9 @@ class RouletteSpunBlockKit(CardBlockkit):
 
 
 class AttendanceJoinedBlockKit(CardBlockkit):
-    def __init__(self, *, attendance: Attendance):
+    def __init__(self, *, attendance: Attendance, roulette: Roulette):
         self.attendance = attendance
+        self.roulette = roulette
 
     def header(self):
         return [
@@ -138,7 +139,7 @@ class AttendanceJoinedBlockKit(CardBlockkit):
                     text=f":knife_fork_plate: {self.attendance.user_name} is joined:confetti_ball:",
                 ),
             ),
-            left_context(roulette=self.attendance.roulette),
+            left_context(roulette=self.roulette),
             Divider(),
         ]
 
@@ -147,15 +148,14 @@ class AttendanceJoinedBlockKit(CardBlockkit):
             Section(
                 text=Text(
                     text=f":busts_in_silhouette: "
-                    f"*{len(self.attendance.roulette.attendances)} attendees* are joined... "
+                    f"*{len(self.roulette.attendances)} attendees* are joined... "
                     f":yum::fork_and_knife:"
                 )
             ),
             Section(
                 text=Text(
                     text=", ".join(
-                        f"`{attendance.user_name}`"
-                        for attendance in self.attendance.roulette.attendances
+                        f"`{attendance.user_name}`" for attendance in self.roulette.attendances
                     )
                 )
             ),
@@ -164,4 +164,4 @@ class AttendanceJoinedBlockKit(CardBlockkit):
         ]
 
     def footer(self) -> list[Block]:
-        return [howto_context(roulette=self.attendance.roulette)]
+        return [howto_context(roulette=self.roulette)]

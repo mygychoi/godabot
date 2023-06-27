@@ -147,7 +147,7 @@ class SlashcommandLunchRouletteService(Service):
                 preference=input.text,
                 roulette=roulette,
             )
-            blockkit = AttendanceJoinedBlockKit(attendance=attendance)
+            blockkit = AttendanceJoinedBlockKit(attendance=attendance, roulette=roulette)
             message = MessageInput(
                 channel_id=input.channel_id, text="...", blocks=blockkit.blocks()
             )
