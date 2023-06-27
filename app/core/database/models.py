@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Self, TypeVar
+from typing import Any, Iterable, Self, TypeVar
 
 from asyncpg import Record
 from pydantic import BaseModel, Field
@@ -39,6 +39,9 @@ class Model(BaseModel, Registry):
     def update_from(self, *, record: Record):
         for field, value in record.items():
             setattr(self, field, value)
+
+    def fields(self, *, names: Iterable[str]) -> list[Any]:
+        return [getattr(self, name) for name in names]
 
 
 ModelType = TypeVar("ModelType", bound=Model)
