@@ -42,7 +42,7 @@ class RouletteQueryRepository(QueryRepository):
         roulette.lunches = [Lunch.construct_from(record=record) for record in lunches_records]
         return roulette
 
-    async def exists(self, *, channel_id, status) -> bool:
+    async def exists(self, *, channel_id: str, status: Roulette.Status) -> bool:
         record = await self.connection().fetchrow(
             """
             SELECT 1
@@ -57,26 +57,22 @@ class RouletteQueryRepository(QueryRepository):
 
 class RouletteCommandRepository(CommandRepository):
     async def save(self, *, roulette: Roulette):
-        record = await self.connection().fetchrow(
-            """
-            INSERT INTO
-                lunch_roulette (
-                    channel_id,
-                    title,
-                    status,
-                    spin_at
-                )
+        if roulette.id is None:
+            query = """
+            INSERT INTO lunch_roulette (channel_id, title, status, spin_at)
             VALUES ($1, $2, $3, $4)
-            ON CONFLICT (channel_id, status) WHERE status='scheduled'
-            DO UPDATE
-                SET
-                    title = $2,
-                    status = $3,
-                    spin_at = $4
             RETURNING *;
-           """,
-            *roulette.dict(include={"channel_id", "title", "status", "spin_at"}).values(),
-        )
+            """
+            params = roulette.fields(names=("channel_id", "title", "status", "spin_at"))
+        else:
+            query = """
+            UPDATE lunch_roulette
+            SET title = $2, status = $3, spin_at = $4
+            WHERE id = $1
+            RETURNING *;
+            """
+            params = roulette.fields(names=("id", "title", "status", "spin_at"))
+        record = await self.connection().fetchrow(query, *params)
         roulette.update_from(record=record)
 
     async def delete(self, *, channel_id: str, status: Roulette.Status):
@@ -97,7 +93,7 @@ class RouletteCommandRepository(CommandRepository):
             VALUES ($1, $2, $3, $4);
             """,
             [
-                [lunch.title, lunch.preference, lunch.recommendation, roulette.id]
+                lunch.fields(names=("title", "preference", "recommendation", "roulette_id"))
                 for lunch in lunches
             ],
         )
@@ -143,24 +139,24 @@ class AttendanceQueryRepository(QueryRepository):
 
 class AttendanceCommandRepository(CommandRepository):
     async def save(self, *, attendance: Attendance):
-        include = {"user_id", "user_name", "preference", "roulette_id", "lunch_id"}
-        record = await self.connection().fetchrow(
-            """
-            INSERT INTO
-                lunch_attendance (
-                    user_id,
-                    user_name,
-                    preference,
-                    roulette_id,
-                    lunch_id
-                )
+        if attendance.id is None:
+            query = """
+            INSERT INTO lunch_attendance (user_id, user_name, preference, roulette_id, lunch_id)
             VALUES ($1, $2, $3, $4, $5)
-            ON CONFLICT on constraint lunch_attendance_user_id_roulette_id_u
-            DO UPDATE SET preference = $3
             RETURNING *;
-           """,
-            *attendance.dict(include=include).values(),
-        )
+            """
+            params = attendance.fields(
+                names=("user_id", "user_name", "preference", "roulette_id", "lunch_id")
+            )
+        else:
+            query = """
+            UPDATE lunch_attendance
+            SET preference = $2
+            WHERE id = $1
+            RETURNING *;
+            """
+            params = attendance.fields(names=("id", "preference"))
+        record = await self.connection().fetchrow(query, *params)
         attendance.update_from(record=record)
 
 

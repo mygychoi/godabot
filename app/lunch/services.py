@@ -11,7 +11,6 @@ from app.nlp import GptClientService
 
 from .constants import PROMPT
 from .exceptions import RouletteSpinFailed
-from .forms import RouletteSpunForm
 from .models import Attendance, Roulette
 from .repositories import (
     AttendanceCommandRepository,
@@ -20,6 +19,7 @@ from .repositories import (
     RouletteCommandRepository,
     RouletteQueryRepository,
 )
+from .validators import RouletteSpinValidator
 
 
 class RouletteQueryService(QueryService):
@@ -62,7 +62,7 @@ class RouletteCommandService(CommandService):
             temperature=temperature,
         )
         try:
-            lunches = RouletteSpunForm.parse_raw(answer).lunches
+            roulette_spun = RouletteSpinValidator.parse_raw(answer)
         except ValidationError as error:
             raise RouletteSpinFailed(
                 f"Spinning was failed from {roulette.title} error: {error}"
@@ -72,8 +72,8 @@ class RouletteCommandService(CommandService):
                 self.repository,
                 self.lunch_command_repository,
             ):
-                await self.repository.set_lunches(roulette=roulette, lunches=lunches)
-                for lunch in lunches:
+                await self.repository.set_lunches(roulette=roulette, lunches=roulette_spun.lunches)
+                for lunch in roulette_spun.lunches:
                     await self.lunch_command_repository.set_attendances(
                         lunch=lunch, attendances=lunch.attendances
                     )
