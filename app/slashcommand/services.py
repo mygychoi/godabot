@@ -126,7 +126,9 @@ class SlashcommandLunchRouletteService(Service):
 
     async def join_roulette(self, *, input: SlachcommandChannelInput):
         access = await self.access_querier.get_by_team_id(team_id=input.team_id)
-        if not await self.roulette_querier.is_scheduled_by_channel_id(channel_id=input.channel_id):
+        if not await self.roulette_querier.exists_scheduled_by_channel_id(
+            channel_id=input.channel_id
+        ):
             await self.bot_clienteer.post_message(
                 token=access.token,
                 message=MessageInput(

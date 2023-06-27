@@ -28,7 +28,7 @@ class RouletteQueryService(QueryService):
     async def get_scheduled_by_channel_id(self, *, channel_id: str) -> Roulette:
         return await self.repository.get(channel_id=channel_id, status=Roulette.Status.scheduled)
 
-    async def is_scheduled_by_channel_id(self, *, channel_id: str):
+    async def exists_scheduled_by_channel_id(self, *, channel_id: str):
         return await self.repository.exists(channel_id=channel_id, status=Roulette.Status.scheduled)
 
 
@@ -40,7 +40,7 @@ class RouletteCommandService(CommandService):
     gpt_clienteer: GptClientService = GptClientService()
 
     async def open(self, *, channel_id: str, title: str) -> Roulette:
-        if await self.querier.is_scheduled_by_channel_id(channel_id=channel_id):
+        if await self.querier.exists_scheduled_by_channel_id(channel_id=channel_id):
             roulette = await self.querier.get_scheduled_by_channel_id(channel_id=channel_id)
         else:
             async with self.transaction(self.repository):
