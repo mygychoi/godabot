@@ -50,10 +50,8 @@ class RouletteCommandService(CommandService):
 
     async def cancel(self, *, roulette: Roulette):
         async with self.transaction(self.repository):
-            await self.repository.delete(
-                channel_id=roulette.channel_id,
-                status=roulette.Status.scheduled,
-            )
+            roulette.status = Roulette.Status.canceled
+            await self.repository.save(roulette=roulette)
 
     async def spin(self, *, roulette: Roulette, temperature=1.0):
         attendances = await self.attendance_query_repository.filter_by(roulette_id=roulette.id)

@@ -14,6 +14,7 @@ class Roulette(TimestampModel):
     class Status(str, Enum):
         scheduled = "scheduled"
         spun = "spun"
+        canceled = "canceled"
 
     id: int = Field(default=None)
     channel_id: str = Field(max_length=255)
